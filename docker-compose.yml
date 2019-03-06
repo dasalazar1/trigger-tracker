@@ -35,8 +35,8 @@ services:
   dev:
     image: node
     volumes:
-      - .:/usr/src/service
-    working_dir: /usr/src/service
+      - .:/usr/app
+    working_dir: /usr/app
     command: npm run start
     networks:
       - proxy
