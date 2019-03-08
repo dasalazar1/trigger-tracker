@@ -2,26 +2,21 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 
 class TriggerAdd extends Component {
-  static propTypes = {
-    triggers: propTypes.object
-  };
+  // static propTypes = {
+  //   triggers: propTypes.object
+  // };
 
-  state = {
-    newTrigger: null
-  };
+  myInput = React.createRef();
 
   render() {
     return (
-      <form>
+      <form onSubmit={this.props.addTrigger}>
         <p>What is your trigger?</p>
-        <button>
-          
-        </button>
+        <input type="text" required placeholder="Trigger" ref={this.myInput} />
+        <br />
+        <button type="submit">Add New Trigger -></button>
       </form>
-        
-        
-
-    )
+    );
   }
 }
 
