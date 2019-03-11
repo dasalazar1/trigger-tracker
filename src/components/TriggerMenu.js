@@ -6,10 +6,13 @@ class TriggerMenu extends Component {
   //   triggers: propTypes.object
   // };
 
-  myInput = React.createRef();
-
   render() {
-    return <React.Fragment />;
+    console.log('menu');
+    return (
+      <React.Fragment>
+        <div>You made it!!</div>
+      </React.Fragment>
+    );
   }
 }
 

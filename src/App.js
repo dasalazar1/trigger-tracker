@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import TriggerAdd from './components/TriggerAdd';
+import { Route } from 'react-router-dom';
+import TriggerMenu from './components/TriggerMenu';
 
 class App extends Component {
   state = {
@@ -17,16 +19,17 @@ class App extends Component {
       triggers: triggers // if thay are the same name then just "triggers" is okay
     });
 
-    this.props.history.push()
+    this.props.history.push();
   };
 
   render() {
     return (
       <div className="App">
         <header className="App-header" />
-        <body className="App-body">
-          <TriggerAdd addTrigger={this.addTrigger} />
-        </body>
+        <div className="App-body">
+          <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
+          <Route path="/menu" component={TriggerMenu} />
+        </div>
       </div>
     );
   }
