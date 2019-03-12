@@ -9,6 +9,19 @@ class App extends Component {
     triggers: {}
   };
 
+  componentDidMount() {
+    //reinstate local storeage
+    const localStorgeRef = localStorage.getItem(`triggers`);
+    if (localStorgeRef) {
+      this.setState({ triggers: JSON.parse(localStorgeRef) });
+    }
+  }
+
+  componentDidUpdate() {
+    console.log('It UPdated');
+    localStorage.setItem(`triggers`, JSON.stringify(this.state.triggers));
+  }
+
   addTrigger = trigger => {
     // take a copy of existing state
     const triggers = { ...this.state.triggers };
@@ -28,7 +41,7 @@ class App extends Component {
         <header className="App-header" />
         <div className="App-body">
           <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
-          <Route path="/menu" component={TriggerMenu} />
+          <Route path="/menu" render={props => <TriggerMenu {...props} triggers={this.state.triggers} />} />
         </div>
       </div>
     );
