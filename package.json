@@ -1,5 +1,7 @@
 {
   "name": "trigger-tracker",
+  "description": "Help track your habit triggers",
+  "template": "create-react-app",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

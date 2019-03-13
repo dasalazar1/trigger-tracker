@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import propTypes from 'prop-types';
 
 class TriggerAdd extends Component {
@@ -19,12 +20,15 @@ class TriggerAdd extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <p>What is your trigger?</p>
-        <input type="text" required placeholder="Trigger" ref={this.myInput} />
-        <br />
-        <button type="submit">Add New Trigger -></button>
-      </form>
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <p>What is your trigger?</p>
+          <input type="text" required placeholder="Trigger" ref={this.myInput} />
+          <br />
+          <button type="submit">Add New Trigger -></button>
+        </form>
+        <Link to="/menu">Go To Triggers</Link>
+      </div>
     );
   }
 }

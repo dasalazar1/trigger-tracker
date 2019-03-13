@@ -13,7 +13,10 @@ class TriggerMenu extends Component {
       <React.Fragment>
         <h2>Triggers</h2>
         {Object.keys(this.props.triggers).map(key => (
-          <div key={key}>{this.props.triggers[key]}</div>
+          <div key={key}>
+            {this.props.triggers[key]}
+            <button>+</button>
+          </div>
         ))}
       </React.Fragment>
     );
