@@ -29,24 +29,32 @@ class TriggerMenu extends Component {
 
   render() {
     console.log('menu');
-    const { open } = this.state;
+    let modal;
+
+    if (this.state.open) {
+      modal = (
+        <TriggerModal
+          open={this.state.open}
+          onCloseModal={this.onCloseModal}
+          triggers={this.props.triggers}
+          triggerKey={this.state.triggerKey}
+          habits={this.props.habits}
+          updateHabit={this.props.updateHabit}
+        />
+      );
+    }
+
     return (
       <React.Fragment>
         <h2>Triggers</h2>
         {Object.keys(this.props.triggers).map(key => (
           <div key={key} index={key}>
-            {this.props.triggers[key]}
+            {this.props.triggers[key].trigger}
             <button onClick={() => this.onOpenModal(key)}>+</button>
           </div>
         ))}
 
-        <TriggerModal
-          open={this.state.open}
-          onCloseModal={this.onCloseModal}
-          habits={this.props.habits}
-          triggerKey={this.state.triggerKey}
-          updateHabit={this.props.updateHabit}
-        />
+        {modal}
 
         <h2>Habits</h2>
         {Object.keys(this.props.habits).map(key => (

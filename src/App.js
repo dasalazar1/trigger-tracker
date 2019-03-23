@@ -3,6 +3,7 @@ import './App.css';
 import TriggerAdd from './components/TriggerAdd';
 import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
+import TriggerStats from './components/TriggerStats';
 
 class App extends Component {
   state = {
@@ -31,7 +32,8 @@ class App extends Component {
     // take a copy of existing state
     const triggers = { ...this.state.triggers };
     // add new trigger to triggers var
-    triggers[`trigger${Date.now()}`] = trigger;
+    triggers[`trigger${Date.now()}`] = { trigger: trigger, habitCounts: {} };
+    console.log('TCL: App -> triggers', triggers);
     // set the new triggers object to state
     this.setState({
       triggers: triggers // if thay are the same name then just "triggers" is okay
@@ -49,11 +51,16 @@ class App extends Component {
   };
 
   updateHabit = (habitKey, triggerKey) => {
+    // get the current state
     let habits = { ...this.state.habits };
-    console.log('TCL: App -> updateHabit -> habits', habits);
+    let triggers = { ...this.state.triggers };
+    // get individual habit and trigger
     let habit = habits[habitKey];
-    console.log('TCL: App -> updateHabit -> habit', habit);
+    let trigger = triggers[triggerKey];
+    //  update reference list
     habit.triggerCounts[triggerKey] = habit.triggerCounts[triggerKey] + 1 || 1;
+    trigger.habitCounts[habitKey] = trigger.habitCounts[habitKey] + 1 || 1;
+    // set state
     this.setState({ habits });
   };
 
@@ -67,7 +74,6 @@ class App extends Component {
             path="/menu"
             render={props => (
               <TriggerMenu
-                {...props}
                 triggers={this.state.triggers}
                 habits={this.state.habits}
                 addHabit={this.addHabit}
@@ -75,6 +81,7 @@ class App extends Component {
               />
             )}
           />
+          <Route path="/stats" render={props => <TriggerStats triggers={this.state.triggers} habits={this.state.habits} />} />
         </div>
       </div>
     );
