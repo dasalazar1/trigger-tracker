@@ -10,28 +10,33 @@ class TriggerStats extends Component {
     return total + num;
   };
 
-  render() {
-    console.log('TCL: TriggerStats -> render -> habits', Object.keys(this.props.habits).length);
+  getValues = () => {
+    console.log('TCL: TriggerStats -> getValues -> habits', Object.keys(this.props.habits).length);
     if (Object.keys(this.props.habits).length > 0) {
-      this.state.habitBar = Object.keys(this.props.habits).map(habitKey => {
+      return Object.keys(this.props.habits).map(habitKey => {
         return { x: habitKey, y: Object.values(this.props.habits[habitKey].triggerCounts).reduce(this.getSum, 0) };
       });
+    } else {
+      return [];
     }
+  };
 
-    // if (habits) {
-    //   habits.reduce(r => {
-    //     return this.state.habitBar.push({ x: r.habit, y: r.triggerCounts.reduce(this.getsum) });
-    //   });
-    // }
+  // componentDidMount = () => {
+  //   console.log('TCL: TriggerStats -> componentDidMount -> habits', Object.keys(this.props.habits).length);
+  //   if (Object.keys(this.props.habits).length > 0) {
+  //     this.setState({
+  //       habitBar: Object.keys(this.props.habits).map(habitKey => {
+  //         return { x: habitKey, y: Object.values(this.props.habits[habitKey].triggerCounts).reduce(this.getSum, 0) };
+  //       })
+  //     });
+  //   }
+  // };
 
+  render() {
+    console.log('TCL: TriggerStats -> render -> habits', Object.keys(this.props.habits).length);
     return (
       <React.Fragment>
-        {Object.keys(this.props.habits).map(habitKey => (
-          <div key={habitKey}>
-            Habit: {this.props.habits[habitKey].habit}: {Object.values(this.props.habits[habitKey].triggerCounts).reduce(this.getSum)}
-          </div>
-        ))}
-        <BarChart data={this.state.habitBar} />
+        <BarChart data={this.getValues()} />
       </React.Fragment>
     );
   }
