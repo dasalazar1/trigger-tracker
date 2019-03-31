@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import "./App.css";
-import TriggerAdd from "./components/TriggerAdd";
-import { Route } from "react-router-dom";
-import TriggerMenu from "./components/TriggerMenu";
-import TriggerStats from "./components/TriggerStats";
+import React, { Component } from 'react';
+import './App.css';
+import TriggerAdd from './components/TriggerAdd';
+import { Route } from 'react-router-dom';
+import TriggerMenu from './components/TriggerMenu';
+import TriggerStats from './components/TriggerStats';
 
 class App extends Component {
   state = {
@@ -33,7 +33,7 @@ class App extends Component {
     const triggers = { ...this.state.triggers };
     // add new trigger to triggers var
     triggers[`trigger${Date.now()}`] = { trigger: trigger, habitCounts: {} };
-    console.log("TCL: App -> triggers", triggers);
+    console.log('TCL: App -> triggers', triggers);
     // set the new triggers object to state
     this.setState({
       triggers: triggers // if thay are the same name then just "triggers" is okay
@@ -47,14 +47,6 @@ class App extends Component {
     habits[`habit${Date.now()}`] = { habit: habit, triggerCounts: {} };
     this.setState({
       habits: habits
-    });
-  };
-
-  removeHabit = key => {
-    const habits = { ...this.state.habits };
-    delete habits[key];
-    this.setState({
-      habits
     });
   };
 
@@ -77,13 +69,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header" />
         <div className="App-body">
-          <Route
-            exact
-            path="/"
-            render={props => (
-              <TriggerAdd {...props} addTrigger={this.addTrigger} />
-            )}
-          />
+          <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
           <Route
             path="/menu"
             render={props => (
@@ -91,20 +77,11 @@ class App extends Component {
                 triggers={this.state.triggers}
                 habits={this.state.habits}
                 addHabit={this.addHabit}
-                removeHabit={this.removeHabit}
                 updateHabit={this.updateHabit}
               />
             )}
           />
-          <Route
-            path="/stats"
-            render={props => (
-              <TriggerStats
-                triggers={this.state.triggers}
-                habits={this.state.habits}
-              />
-            )}
-          />
+          <Route path="/stats" render={props => <TriggerStats triggers={this.state.triggers} habits={this.state.habits} />} />
         </div>
       </div>
     );
