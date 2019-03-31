@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import TriggerModal from './triggerModal';
+import React, { Component } from "react";
+import TriggerModal from "./triggerModal";
 
 class TriggerMenu extends Component {
   state = {
     open: false,
-    triggerKey: ''
+    triggerKey: ""
   };
 
   myInput = React.createRef();
@@ -19,16 +19,19 @@ class TriggerMenu extends Component {
 
   handleSubmit = event => {
     this.props.addHabit(this.myInput.current.value);
-    console.log('TCL: HabitAdd -> this.myInput.value', this.myInput.current.value);
+    console.log(
+      "TCL: HabitAdd -> this.myInput.value",
+      this.myInput.current.value
+    );
   };
 
   handleClick = (habitKey, triggerKey) => {
-    console.log('TCL: TriggerMenu -> handleClick -> triggerKey', triggerKey);
-    console.log('TCL: TriggerMenu -> handleClick -> habitKey', habitKey);
+    console.log("TCL: TriggerMenu -> handleClick -> triggerKey", triggerKey);
+    console.log("TCL: TriggerMenu -> handleClick -> habitKey", habitKey);
   };
 
   render() {
-    console.log('menu');
+    console.log("menu");
     let modal;
 
     if (this.state.open) {
@@ -60,11 +63,16 @@ class TriggerMenu extends Component {
         {Object.keys(this.props.habits).map(key => (
           <div key={key}>
             {this.props.habits[key].habit}
-            <button>-</button>
+            <button onClick={() => this.props.removeHabit(key)}>-</button>
           </div>
         ))}
         <form onSubmit={this.handleSubmit}>
-          <input type="text" required placeholder="Add a new Habit" ref={this.myInput} />
+          <input
+            type="text"
+            required
+            placeholder="Add a new Habit"
+            ref={this.myInput}
+          />
           <br />
           <button type="submit">Add New Habit -></button>
         </form>
