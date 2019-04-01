@@ -50,6 +50,14 @@ class App extends Component {
     });
   };
 
+  removeHabit = key => {
+    const habits = { ...this.state.habits };
+    delete habits[key];
+    this.setState({
+      habits
+    });
+  };
+
   updateHabit = (habitKey, triggerKey) => {
     // get the current state
     let habits = { ...this.state.habits };
@@ -77,6 +85,7 @@ class App extends Component {
                 triggers={this.state.triggers}
                 habits={this.state.habits}
                 addHabit={this.addHabit}
+                removeHabit={this.removeHabit}
                 updateHabit={this.updateHabit}
               />
             )}
