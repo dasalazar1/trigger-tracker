@@ -10,6 +10,7 @@ class TriggerMenu extends Component {
   myInput = React.createRef();
 
   onOpenModal = key => {
+    console.log('TCL: TriggerMenu -> onOpenModal -> key', key);
     this.setState({ open: true, triggerKey: key });
   };
 
@@ -47,22 +48,30 @@ class TriggerMenu extends Component {
     return (
       <React.Fragment>
         <h2>Triggers</h2>
-        {Object.keys(this.props.triggers).map(key => (
-          <div key={key} index={key}>
-            {this.props.triggers[key].trigger}
-            <button onClick={() => this.onOpenModal(key)}>+</button>
-          </div>
-        ))}
+        {this.props.triggers.length === 0 ? (
+          <div />
+        ) : (
+          this.props.triggers.map(trigger => (
+            <div key={trigger._id} index={trigger._id}>
+              {trigger.trigger}
+              <button onClick={() => this.onOpenModal(trigger._id)}>+</button>
+            </div>
+          ))
+        )}
 
         {modal}
 
         <h2>Habits</h2>
-        {Object.keys(this.props.habits).map(key => (
-          <div key={key}>
-            {this.props.habits[key].habit}
-            <button onClick={() => this.props.removeHabit(key)}>-</button>
-          </div>
-        ))}
+        {this.props.habits.length === 0 ? (
+          <div />
+        ) : (
+          this.props.habits.map(habit => (
+            <div key={habit._id}>
+              {this.props.habits.find(hab => hab._id === habit._id).habit}
+              <button onClick={() => this.props.removeHabit(habit._id)}>-</button>
+            </div>
+          ))
+        )}
         <form onSubmit={this.handleSubmit}>
           <input type="text" required placeholder="Add a new Habit" ref={this.myInput} />
           <br />

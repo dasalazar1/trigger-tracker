@@ -7,8 +7,8 @@ import TriggerStats from './components/TriggerStats';
 
 class App extends Component {
   state = {
-    triggers: {},
-    habits: {}
+    triggers: [],
+    habits: []
   };
 
   componentDidMount() {
@@ -29,42 +29,40 @@ class App extends Component {
   }
 
   addTrigger = trigger => {
-    // take a copy of existing state
-    const triggers = { ...this.state.triggers };
-    // add new trigger to triggers var
-    triggers[`trigger${Date.now()}`] = { trigger: trigger, habitCounts: {} };
+    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {} };
+    console.log('TCL: App -> tri', tri);
+    const triggers = [...this.state.triggers, tri];
     console.log('TCL: App -> triggers', triggers);
-    // set the new triggers object to state
     this.setState({
-      triggers: triggers // if thay are the same name then just "triggers" is okay
+      triggers
     });
 
     this.props.history.push();
   };
 
   addHabit = habit => {
-    const habits = { ...this.state.habits };
-    habits[`habit${Date.now()}`] = { habit: habit, triggerCounts: {} };
-    this.setState({
-      habits: habits
-    });
-  };
-
-  removeHabit = key => {
-    const habits = { ...this.state.habits };
-    delete habits[key];
+    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {} };
+    let habits = [...this.state.habits, hab];
     this.setState({
       habits
     });
   };
 
+  removeHabit = key => {
+    const habits = this.state.habits;
+    // delete habits[habits.findIndex(hab => hab._id === key)];
+    this.setState({
+      habits: habits.filter(hab => hab._id !== key)
+    });
+  };
+
   updateHabit = (habitKey, triggerKey) => {
     // get the current state
-    let habits = { ...this.state.habits };
-    let triggers = { ...this.state.triggers };
+    let habits = this.state.habits;
+    let triggers = this.state.triggers;
     // get individual habit and trigger
-    let habit = habits[habitKey];
-    let trigger = triggers[triggerKey];
+    let habit = habits.find(hab => hab._id === habitKey);
+    let trigger = triggers.find(tri => tri._id === triggerKey);
     //  update reference list
     habit.triggerCounts[triggerKey] = habit.triggerCounts[triggerKey] + 1 || 1;
     trigger.habitCounts[habitKey] = trigger.habitCounts[habitKey] + 1 || 1;

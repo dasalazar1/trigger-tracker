@@ -8,10 +8,12 @@ class TriggerModal extends Component {
     return (
       <React.Fragment>
         <Modal open={this.props.open} onClose={this.props.onCloseModal} center>
-          <h2>What habit did {this.props.triggers[this.props.triggerKey].trigger} trigger?</h2>
-          {Object.keys(this.props.habits).map(habitKey => (
-            <div key={habitKey}>
-              <button onClick={() => this.props.updateHabit(habitKey, this.props.triggerKey)}>{this.props.habits[habitKey].habit}</button>
+          <h2>What habit did {this.props.triggers.find(tri => tri._id === this.props.triggerKey).trigger} trigger?</h2>
+          {this.props.habits.map(habit => (
+            <div key={habit._id}>
+              <button onClick={() => this.props.updateHabit(habit._id, this.props.triggerKey)}>
+                {this.props.habits.find(hab => hab._id === habit._id).habit}
+              </button>
             </div>
           ))}
         </Modal>
