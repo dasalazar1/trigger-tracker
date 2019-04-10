@@ -12,15 +12,35 @@ class App extends Component {
   };
 
   componentDidMount() {
+    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers')
+      .then(response => {
+        console.log('response from atlas: ' + response);
+        return response.json();
+      })
+      .then(data => {
+        console.log('data from atlas: ' + JSON.stringify(data));
+        this.setState({ triggers: data });
+      });
+
+    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits')
+      .then(response => {
+        console.log('response from atlas: ' + response);
+        return response.json();
+      })
+      .then(data => {
+        console.log('data from atlas: ' + JSON.stringify(data));
+        this.setState({ habits: data });
+      });
+
     //reinstate local storeage
-    const localStorgeRef = localStorage.getItem(`triggers`);
-    if (localStorgeRef) {
-      this.setState({ triggers: JSON.parse(localStorgeRef) });
-    }
-    const localStorgeHabitsRef = localStorage.getItem(`habits`);
-    if (localStorgeHabitsRef) {
-      this.setState({ habits: JSON.parse(localStorgeHabitsRef) });
-    }
+    // const localStorgeRef = localStorage.getItem(`triggers`);
+    // if (localStorgeRef) {
+    //   this.setState({ triggers: JSON.parse(localStorgeRef) });
+    // }
+    // const localStorgeHabitsRef = localStorage.getItem(`habits`);
+    // if (localStorgeHabitsRef) {
+    //   this.setState({ habits: JSON.parse(localStorgeHabitsRef) });
+    // }
   }
 
   componentDidUpdate() {
