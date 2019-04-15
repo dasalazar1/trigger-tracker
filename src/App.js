@@ -34,6 +34,24 @@ class App extends Component {
   }
 
   componentDidUpdate() {
+    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setTriggers', {
+      method: 'POST',
+      //headers: new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+      body: JSON.stringify(this.state.triggers)
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error(response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
+
     fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setHabits', {
       method: 'POST',
       //headers: new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
