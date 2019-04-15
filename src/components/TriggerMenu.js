@@ -19,8 +19,9 @@ class TriggerMenu extends Component {
   };
 
   handleSubmit = event => {
-    this.props.addHabit(this.myInput.current.value);
+    event.preventDefault();
     console.log('TCL: HabitAdd -> this.myInput.value', this.myInput.current.value);
+    this.props.addHabit(this.myInput.current.value);
   };
 
   handleClick = (habitKey, triggerKey) => {

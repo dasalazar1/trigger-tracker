@@ -14,40 +14,46 @@ class App extends Component {
   componentDidMount() {
     fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers')
       .then(response => {
-        console.log('response from atlas: ' + response);
+        console.log('response from atlas triggers: ' + response);
         return response.json();
       })
       .then(data => {
-        console.log('data from atlas: ' + JSON.stringify(data));
+        console.log('data from atlas triggers: ' + JSON.stringify(data));
         this.setState({ triggers: data });
       });
 
     fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits')
       .then(response => {
-        console.log('response from atlas: ' + response);
+        console.log('response from atlas habits: ' + response);
         return response.json();
       })
       .then(data => {
-        console.log('data from atlas: ' + JSON.stringify(data));
+        console.log('data from atlas habits: ' + JSON.stringify(data));
         this.setState({ habits: data });
       });
-
-    //reinstate local storeage
-    // const localStorgeRef = localStorage.getItem(`triggers`);
-    // if (localStorgeRef) {
-    //   this.setState({ triggers: JSON.parse(localStorgeRef) });
-    // }
-    // const localStorgeHabitsRef = localStorage.getItem(`habits`);
-    // if (localStorgeHabitsRef) {
-    //   this.setState({ habits: JSON.parse(localStorgeHabitsRef) });
-    // }
   }
 
   componentDidUpdate() {
-    localStorage.setItem(`triggers`, JSON.stringify(this.state.triggers));
-    localStorage.setItem(`habits`, JSON.stringify(this.state.habits));
-  }
+    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setHabits', {
+      method: 'POST',
+      //headers: new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
+      body: JSON.stringify(this.state.habits)
+    })
+      .then(response => {
+        if (!response.ok) {
+          console.error(response.status);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data);
+      })
+      .catch(err => {
+        console.error(err.message);
+      });
 
+    this.setState();
+  }
   addTrigger = trigger => {
     var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {} };
     console.log('TCL: App -> tri', tri);
@@ -61,18 +67,20 @@ class App extends Component {
   };
 
   addHabit = habit => {
+    console.log('addhabit');
     let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {} };
     let habits = [...this.state.habits, hab];
+
     this.setState({
-      habits
+      habits: habits
     });
   };
 
   removeHabit = key => {
     const habits = this.state.habits;
-    // delete habits[habits.findIndex(hab => hab._id === key)];
+    habits[habits.findIndex(hab => hab._id === key)].habit = null;
     this.setState({
-      habits: habits.filter(hab => hab._id !== key)
+      habits
     });
   };
 
@@ -87,7 +95,8 @@ class App extends Component {
     habit.triggerCounts[triggerKey] = habit.triggerCounts[triggerKey] + 1 || 1;
     trigger.habitCounts[habitKey] = trigger.habitCounts[habitKey] + 1 || 1;
     // set state
-    this.setState({ habits });
+    //this.setState({ habits });
+    this.setHabits(habits);
   };
 
   render() {
