@@ -4,33 +4,43 @@ import TriggerAdd from './components/TriggerAdd';
 import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
 import TriggerStats from './components/TriggerStats';
+import { Stitch, GoogleRedirectCredential } from 'mongodb-stitch-browser-sdk';
+const User = ({ data: name }) =>
+  name && (
+    <div>
+      <pre>{name}</pre>
+    </div>
+  );
 
 class App extends Component {
   state = {
     triggers: [],
-    habits: []
+    habits: [],
+    currentUser: false
   };
 
   componentDidMount() {
-    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers')
-      .then(response => {
-        console.log('response from atlas triggers: ' + response);
-        return response.json();
-      })
-      .then(data => {
-        console.log('data from atlas triggers: ' + JSON.stringify(data));
-        this.setState({ triggers: data });
-      });
+    this.setupStitch().then(() => {
+      fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers')
+        .then(response => {
+          console.log('response from atlas triggers: ' + response);
+          return response.json();
+        })
+        .then(data => {
+          console.log('data from atlas triggers: ' + JSON.stringify(data));
+          this.setState({ triggers: data });
+        });
 
-    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits')
-      .then(response => {
-        console.log('response from atlas habits: ' + response);
-        return response.json();
-      })
-      .then(data => {
-        console.log('data from atlas habits: ' + JSON.stringify(data));
-        this.setState({ habits: data });
-      });
+      fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits')
+        .then(response => {
+          console.log('response from atlas habits: ' + response);
+          return response.json();
+        })
+        .then(data => {
+          console.log('data from atlas habits: ' + JSON.stringify(data));
+          this.setState({ habits: data });
+        });
+    });
   }
 
   componentDidUpdate() {
@@ -72,6 +82,38 @@ class App extends Component {
 
     this.setState();
   }
+
+  //start stitch setup
+  async setupStitch() {
+    //copy the name of your google-auth enabled stitch application here
+    //the name of the app will typically be the stitch application name
+    //with a "-"" + random string appended
+    const appId = 'stitchapp-lifjq';
+
+    // Get a client for your Stitch app, or instantiate a new one
+    const client = Stitch.hasAppClient(appId) ? Stitch.getAppClient(appId) : Stitch.initializeAppClient(appId);
+
+    //manage user authentication state
+
+    // Check if this user has already authenticated and we're here
+    // from the redirect. If so, process the redirect to finish login.
+    if (client.auth.hasRedirectResult()) {
+      await client.auth.handleRedirectResult().catch(console.error);
+      console.log('Processed redirect result.');
+    }
+
+    if (client.auth.isLoggedIn) {
+      // The user is logged in. Add their user object to component state.
+      let currentUser = client.auth.user;
+      this.setState({ currentUser });
+    } else {
+      // The user has not yet authenticated. Begin the Google login flow.
+      const credential = new GoogleRedirectCredential();
+      client.auth.loginWithRedirect(credential);
+    }
+  }
+  //end stitch setup
+
   addTrigger = trigger => {
     var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {} };
     console.log('TCL: App -> tri', tri);
@@ -118,10 +160,12 @@ class App extends Component {
   };
 
   render() {
+    const { currentUser } = this.state;
     return (
       <div className="App">
         <header className="App-header" />
         <div className="App-body">
+          {!currentUser ? <div>User must authenticate.</div> : <div>{currentUser.profile.name}</div>}
           <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
           <Route
             path="/menu"
