@@ -5,12 +5,7 @@ import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
 import TriggerStats from './components/TriggerStats';
 import { Stitch, GoogleRedirectCredential } from 'mongodb-stitch-browser-sdk';
-const User = ({ data: name }) =>
-  name && (
-    <div>
-      <pre>{name}</pre>
-    </div>
-  );
+import { fetchTriggers, fetchHabits, postHabits, postTriggers } from './Utils';
 
 class App extends Component {
   state = {
@@ -21,66 +16,14 @@ class App extends Component {
 
   componentDidMount() {
     this.setupStitch().then(() => {
-      fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers')
-        .then(response => {
-          console.log('response from atlas triggers: ' + response);
-          return response.json();
-        })
-        .then(data => {
-          console.log('data from atlas triggers: ' + JSON.stringify(data));
-          this.setState({ triggers: data });
-        });
-
-      fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits')
-        .then(response => {
-          console.log('response from atlas habits: ' + response);
-          return response.json();
-        })
-        .then(data => {
-          console.log('data from atlas habits: ' + JSON.stringify(data));
-          this.setState({ habits: data });
-        });
+      Promise.all([fetchTriggers(), fetchHabits()]).then(([tri, hab]) => {
+        this.setState({ triggers: tri, habits: hab });
+      });
     });
   }
 
   componentDidUpdate() {
-    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setTriggers', {
-      method: 'POST',
-      //headers: new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
-      body: JSON.stringify(this.state.triggers)
-    })
-      .then(response => {
-        if (!response.ok) {
-          console.error(response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-
-    fetch('https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setHabits', {
-      method: 'POST',
-      //headers: new Headers({ 'Content-Type': 'application/json', Accept: 'application/json' }),
-      body: JSON.stringify(this.state.habits)
-    })
-      .then(response => {
-        if (!response.ok) {
-          console.error(response.status);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-      })
-      .catch(err => {
-        console.error(err.message);
-      });
-
-    this.setState();
+    Promise.all([postTriggers(), postHabits()]);
   }
 
   //start stitch setup
