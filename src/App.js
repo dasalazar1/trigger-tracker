@@ -11,6 +11,7 @@ class App extends Component {
   state = {
     triggers: [],
     habits: [],
+    client: false,
     currentUser: false
   };
 
@@ -31,31 +32,37 @@ class App extends Component {
     //copy the name of your google-auth enabled stitch application here
     //the name of the app will typically be the stitch application name
     //with a "-"" + random string appended
-    const appId = 'stitchapp-lifjq';
+    if (!this.state.client) {
+      const appId = 'stitchapp-lifjq';
 
-    // Get a client for your Stitch app, or instantiate a new one
-    const client = Stitch.hasAppClient(appId) ? Stitch.getAppClient(appId) : Stitch.initializeAppClient(appId);
+      // Get a client for your Stitch app, or instantiate a new one
+      this.state.client = Stitch.hasAppClient(appId) ? Stitch.getAppClient(appId) : Stitch.initializeAppClient(appId);
+    }
+  }
+  //end stitch setup
 
-    //manage user authentication state
+  handleLogout = () => {
+    this.state.client.auth.logout().then(() => {
+      this.setState({ currentUser: false });
+    });
+  };
 
-    // Check if this user has already authenticated and we're here
-    // from the redirect. If so, process the redirect to finish login.
-    if (client.auth.hasRedirectResult()) {
-      await client.auth.handleRedirectResult().catch(console.error);
+  handleLogin = async () => {
+    if (this.state.client.auth.hasRedirectResult()) {
+      await this.state.client.auth.handleRedirectResult().catch(console.error);
       console.log('Processed redirect result.');
     }
 
-    if (client.auth.isLoggedIn) {
+    if (this.state.client.auth.isLoggedIn) {
       // The user is logged in. Add their user object to component state.
-      let currentUser = client.auth.user;
+      let currentUser = this.state.client.auth.user;
       this.setState({ currentUser });
     } else {
       // The user has not yet authenticated. Begin the Google login flow.
       const credential = new GoogleRedirectCredential();
-      client.auth.loginWithRedirect(credential);
+      this.state.client.auth.loginWithRedirect(credential);
     }
-  }
-  //end stitch setup
+  };
 
   addTrigger = trigger => {
     var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {} };
@@ -108,7 +115,16 @@ class App extends Component {
       <div className="App">
         <header className="App-header" />
         <div className="App-body">
-          {!currentUser ? <div>User must authenticate.</div> : <div>{currentUser.profile.name}</div>}
+          {!currentUser ? (
+            <div>
+              User must authenticate.<button onClick={this.handleLogin}>Sign In</button>
+            </div>
+          ) : (
+            <div>
+              {currentUser.profile.name}
+              <button onClick={this.handleLogout}>Sign Out</button>
+            </div>
+          )}
           <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
           <Route
             path="/menu"
