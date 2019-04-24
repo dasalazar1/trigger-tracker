@@ -23,7 +23,7 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    Promise.all([postTriggers(), postHabits()]);
+    Promise.all([postTriggers(this.state.triggers), postHabits(this.state.habits)]);
   }
 
   //start stitch setup
