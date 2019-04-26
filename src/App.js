@@ -17,9 +17,12 @@ class App extends Component {
 
   componentDidMount() {
     this.setupStitch().then(() => {
-      Promise.all([fetchTriggers(this.state.currentUser.email), fetchHabits(this.state.currentUser.email)]).then(([tri, hab]) => {
-        this.setState({ triggers: tri, habits: hab });
-      });
+      console.log('email: ' + this.state.currentUser.profile.email);
+      Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
+        ([tri, hab]) => {
+          this.setState({ triggers: tri, habits: hab });
+        }
+      );
     });
   }
 
@@ -27,27 +30,12 @@ class App extends Component {
     Promise.all([postTriggers(this.state.triggers), postHabits(this.state.habits)]);
   }
 
-  //start stitch setup
   async setupStitch() {
-    //copy the name of your google-auth enabled stitch application here
-    //the name of the app will typically be the stitch application name
-    //with a "-"" + random string appended
     if (!this.state.client) {
       const appId = 'stitchapp-lifjq';
-
-      // Get a client for your Stitch app, or instantiate a new one
       this.state.client = Stitch.hasAppClient(appId) ? Stitch.getAppClient(appId) : Stitch.initializeAppClient(appId);
     }
-  }
-  //end stitch setup
 
-  handleLogout = () => {
-    this.state.client.auth.logout().then(() => {
-      this.setState({ currentUser: false });
-    });
-  };
-
-  handleLogin = async () => {
     if (this.state.client.auth.hasRedirectResult()) {
       await this.state.client.auth.handleRedirectResult().catch(console.error);
       console.log('Processed redirect result.');
@@ -57,15 +45,23 @@ class App extends Component {
       // The user is logged in. Add their user object to component state.
       let currentUser = this.state.client.auth.user;
       this.setState({ currentUser });
-    } else {
-      // The user has not yet authenticated. Begin the Google login flow.
-      const credential = new GoogleRedirectCredential();
-      this.state.client.auth.loginWithRedirect(credential);
     }
+  }
+
+  handleLogout = () => {
+    this.state.client.auth.logout().then(() => {
+      this.setState({ currentUser: false });
+    });
+  };
+
+  handleLogin = async () => {
+    // The user has not yet authenticated. Begin the Google login flow.
+    const credential = new GoogleRedirectCredential();
+    this.state.client.auth.loginWithRedirect(credential);
   };
 
   addTrigger = trigger => {
-    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, userEmail: this.state.currentUser.email };
+    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, userEmail: this.state.currentUser.profile.email };
     console.log('TCL: App -> tri', tri);
     const triggers = [...this.state.triggers, tri];
     console.log('TCL: App -> triggers', triggers);
@@ -78,7 +74,7 @@ class App extends Component {
 
   addHabit = habit => {
     console.log('addhabit');
-    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, userEmail: this.state.currentUser.email };
+    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, userEmail: this.state.currentUser.profile.email };
     let habits = [...this.state.habits, hab];
 
     this.setState({

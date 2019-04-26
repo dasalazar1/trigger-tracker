@@ -10,7 +10,8 @@ export function fetchTriggers(email) {
 
 export function fetchHabits(email) {
   return fetch(
-    'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits'
+    'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits?email=' +
+      email
   ).then(response => {
     console.log('response from atlas habits: ' + response);
     return response.json();
