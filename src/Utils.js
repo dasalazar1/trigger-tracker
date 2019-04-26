@@ -1,13 +1,14 @@
-export function fetchTriggers() {
+export function fetchTriggers(email) {
   return fetch(
-    'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers'
+    'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getTriggers?email=' +
+      email
   ).then(response => {
     console.log('response from atlas triggers: ' + response);
     return response.json();
   });
 }
 
-export function fetchHabits() {
+export function fetchHabits(email) {
   return fetch(
     'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/getHabits'
   ).then(response => {

@@ -17,7 +17,7 @@ class App extends Component {
 
   componentDidMount() {
     this.setupStitch().then(() => {
-      Promise.all([fetchTriggers(), fetchHabits()]).then(([tri, hab]) => {
+      Promise.all([fetchTriggers(this.state.currentUser.email), fetchHabits(this.state.currentUser.email)]).then(([tri, hab]) => {
         this.setState({ triggers: tri, habits: hab });
       });
     });
@@ -65,7 +65,7 @@ class App extends Component {
   };
 
   addTrigger = trigger => {
-    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {} };
+    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, userEmail: this.state.currentUser.email };
     console.log('TCL: App -> tri', tri);
     const triggers = [...this.state.triggers, tri];
     console.log('TCL: App -> triggers', triggers);
@@ -78,7 +78,7 @@ class App extends Component {
 
   addHabit = habit => {
     console.log('addhabit');
-    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {} };
+    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, userEmail: this.state.currentUser.email };
     let habits = [...this.state.habits, hab];
 
     this.setState({
