@@ -61,7 +61,7 @@ class App extends Component {
   };
 
   addTrigger = trigger => {
-    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, userEmail: this.state.currentUser.profile.email };
+    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, email: this.state.currentUser.profile.email };
     console.log('TCL: App -> tri', tri);
     const triggers = [...this.state.triggers, tri];
     console.log('TCL: App -> triggers', triggers);
@@ -74,7 +74,7 @@ class App extends Component {
 
   addHabit = habit => {
     console.log('addhabit');
-    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, userEmail: this.state.currentUser.profile.email };
+    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, email: this.state.currentUser.profile.email };
     let habits = [...this.state.habits, hab];
 
     this.setState({
