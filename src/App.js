@@ -17,12 +17,14 @@ class App extends Component {
 
   componentDidMount() {
     this.setupStitch().then(() => {
-      console.log('email: ' + this.state.currentUser.profile.email);
-      Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
-        ([tri, hab]) => {
-          this.setState({ triggers: tri, habits: hab });
-        }
-      );
+      if (this.state.currentUser) {
+        console.log('email: ' + this.state.currentUser.profile.email);
+        Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
+          ([tri, hab]) => {
+            this.setState({ triggers: tri, habits: hab });
+          }
+        );
+      }
     });
   }
 
@@ -101,8 +103,7 @@ class App extends Component {
     habit.triggerCounts[triggerKey] = habit.triggerCounts[triggerKey] + 1 || 1;
     trigger.habitCounts[habitKey] = trigger.habitCounts[habitKey] + 1 || 1;
     // set state
-    //this.setState({ habits });
-    this.setHabits(habits);
+    this.setState({ habits });
   };
 
   render() {

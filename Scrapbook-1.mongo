@@ -1,0 +1,7 @@
+db.habits.find()
+
+db.habits.deleteMany({})
+
+db.triggers.find()
+
+db.triggers.deleteMany({})
