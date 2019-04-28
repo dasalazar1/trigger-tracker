@@ -1,0 +1,11 @@
+{
+    "id": "5cc53942c7edffd2fd8dc228",
+    "name": "updateCounts",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "POST",
+        "validationMethod": "NO_VALIDATION"
+    },
+    "respond_result": true
+}

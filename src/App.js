@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
 import TriggerStats from './components/TriggerStats';
 import { Stitch, GoogleRedirectCredential } from 'mongodb-stitch-browser-sdk';
-import { fetchTriggers, fetchHabits, postHabits, postTriggers } from './Utils';
+import { fetchTriggers, fetchHabits, updateCounts, postHabits, postTriggers } from './Utils';
 
 class App extends Component {
   state = {
@@ -29,7 +29,8 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    Promise.all([postTriggers(this.state.triggers), postHabits(this.state.habits)]);
+    //console.log(JSON.stringify(this.state.habits));
+    //Promise.all([postTriggers(this.state.triggers), postHabits(this.state.habits)]);
   }
 
   async setupStitch() {
@@ -64,9 +65,7 @@ class App extends Component {
 
   addTrigger = trigger => {
     var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, email: this.state.currentUser.profile.email };
-    console.log('TCL: App -> tri', tri);
     const triggers = [...this.state.triggers, tri];
-    console.log('TCL: App -> triggers', triggers);
     this.setState({
       triggers
     });
@@ -92,18 +91,26 @@ class App extends Component {
     });
   };
 
+  // updateHabit = (habitKey, triggerKey) => {
+  //   // get the current state
+  //   let habits = this.state.habits;
+  //   let triggers = this.state.triggers;
+  //   // get individual habit and trigger
+  //   let habit = habits.find(hab => hab._id === habitKey);
+  //   let trigger = triggers.find(tri => tri._id === triggerKey);
+  //   //  get the counts
+  //   let triggerCounts = habit.triggerCounts;
+  //   let habitCounts = trigger.habitCounts;
+  //   // find the count to increment
+  //   let triCount = triggerCounts.fine(tc => tc.trigger_id === triggerKey)
+  //   let habCount = habitCounts.find(hc => hc.habit_id === habitKey)
+  //   // ihcrement
+  //   // set state
+  //   this.setState({ habits });
+  // };
+
   updateHabit = (habitKey, triggerKey) => {
-    // get the current state
-    let habits = this.state.habits;
-    let triggers = this.state.triggers;
-    // get individual habit and trigger
-    let habit = habits.find(hab => hab._id === habitKey);
-    let trigger = triggers.find(tri => tri._id === triggerKey);
-    //  update reference list
-    habit.triggerCounts[triggerKey] = habit.triggerCounts[triggerKey] + 1 || 1;
-    trigger.habitCounts[habitKey] = trigger.habitCounts[habitKey] + 1 || 1;
-    // set state
-    this.setState({ habits });
+    updateCounts(habitKey, triggerKey);
   };
 
   render() {

@@ -5,3 +5,10 @@ db.habits.deleteMany({})
 db.triggers.find()
 
 db.triggers.deleteMany({})
+
+db.triggers.findOne({"habitCounts.habit_id": "5cc535dcc912013f13457848"})
+
+db.triggers.find({"_id": ObjectId("5cc5412ab2505988eb663846")});
+
+db.triggers.updateOne({_id: ObjectId("5cc5412ab2505988eb663846")}, 
+{$push: {"habitCounts": {"habit_id":"5cc535dcc912013f13457948", "count": 0}} });

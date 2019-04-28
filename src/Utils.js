@@ -18,11 +18,18 @@ export function fetchHabits(email) {
   });
 }
 
+export function updateCounts(habitKey, triggerKey) {
+  return fetch();
+}
+
 export function postTriggers(triggers) {
   return fetch(
     'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setTriggers',
     {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(triggers)
     }
   ).then(response => {
@@ -38,6 +45,9 @@ export function postHabits(habits) {
     'https://webhooks.mongodb-stitch.com/api/client/v2.0/app/stitchapp-lifjq/service/TriggerTracker/incoming_webhook/setHabits',
     {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(habits)
     }
   ).then(response => {
