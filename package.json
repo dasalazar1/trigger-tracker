@@ -20,7 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "export": "rm -r StitchApp &&  stitch-cli export --app-id=stitchapp-lifjq",
+    "merge": "stitch-cli import --path=./StitchApp --strategy=merge -y"
   },
   "eslintConfig": {
     "extends": "react-app"
