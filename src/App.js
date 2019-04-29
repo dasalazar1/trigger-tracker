@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
 import TriggerStats from './components/TriggerStats';
 import { Stitch, GoogleRedirectCredential } from 'mongodb-stitch-browser-sdk';
-import { fetchTriggers, fetchHabits, updateCounts, postHabits, postTriggers } from './Utils';
+import { fetchTriggers, fetchHabits, updateCounts, newHabit, newTrigger, deleteHabit } from './Utils';
 
 class App extends Component {
   state = {
@@ -64,10 +64,14 @@ class App extends Component {
   };
 
   addTrigger = trigger => {
-    var tri = { _id: `trigger${Date.now()}`, trigger: trigger, habitCounts: {}, email: this.state.currentUser.profile.email };
-    const triggers = [...this.state.triggers, tri];
-    this.setState({
-      triggers
+    console.log('addhabit');
+    let details = { name: trigger, email: this.state.currentUser.profile.email };
+    newTrigger(details).then(() => {
+      Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
+        ([tri, hab]) => {
+          this.setState({ triggers: tri, habits: hab });
+        }
+      );
     });
 
     this.props.history.push();
@@ -75,42 +79,30 @@ class App extends Component {
 
   addHabit = habit => {
     console.log('addhabit');
-    let hab = { _id: `habit${Date.now()}`, habit: habit, triggerCounts: {}, email: this.state.currentUser.profile.email };
-    let habits = [...this.state.habits, hab];
-
-    this.setState({
-      habits: habits
+    let details = { name: habit, email: this.state.currentUser.profile.email };
+    newHabit(details).then(() => {
+      Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
+        ([tri, hab]) => {
+          this.setState({ triggers: tri, habits: hab });
+        }
+      );
     });
   };
 
   removeHabit = key => {
-    const habits = this.state.habits;
-    habits[habits.findIndex(hab => hab._id === key)].habit = null;
-    this.setState({
-      habits
+    deleteHabit(key['$oid']).then(() => {
+      Promise.all([fetchTriggers(this.state.currentUser.profile.email), fetchHabits(this.state.currentUser.profile.email)]).then(
+        ([tri, hab]) => {
+          this.setState({ triggers: tri, habits: hab });
+        }
+      );
     });
   };
 
-  // updateHabit = (habitKey, triggerKey) => {
-  //   // get the current state
-  //   let habits = this.state.habits;
-  //   let triggers = this.state.triggers;
-  //   // get individual habit and trigger
-  //   let habit = habits.find(hab => hab._id === habitKey);
-  //   let trigger = triggers.find(tri => tri._id === triggerKey);
-  //   //  get the counts
-  //   let triggerCounts = habit.triggerCounts;
-  //   let habitCounts = trigger.habitCounts;
-  //   // find the count to increment
-  //   let triCount = triggerCounts.fine(tc => tc.trigger_id === triggerKey)
-  //   let habCount = habitCounts.find(hc => hc.habit_id === habitKey)
-  //   // ihcrement
-  //   // set state
-  //   this.setState({ habits });
-  // };
-
   updateHabit = (habitKey, triggerKey) => {
-    updateCounts(habitKey, triggerKey);
+    console.log('TCL: App -> updateHabit -> triggerKey', triggerKey['$oid']);
+    console.log('TCL: App -> updateHabit -> habitKey', habitKey['$oid']);
+    updateCounts(habitKey['$oid'], triggerKey['$oid']);
   };
 
   render() {

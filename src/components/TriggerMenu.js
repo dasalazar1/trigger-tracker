@@ -54,7 +54,7 @@ class TriggerMenu extends Component {
         ) : (
           this.props.triggers.map(trigger => (
             <div key={trigger._id} index={trigger._id}>
-              {trigger.trigger}
+              {trigger.name}
               <button onClick={() => this.onOpenModal(trigger._id)}>+</button>
             </div>
           ))
@@ -68,7 +68,7 @@ class TriggerMenu extends Component {
         ) : (
           this.props.habits.map(habit => (
             <div key={habit._id}>
-              {this.props.habits.find(hab => hab._id === habit._id).habit}
+              {this.props.habits.find(hab => hab._id === habit._id).name}
               <button onClick={() => this.props.removeHabit(habit._id)}>-</button>
             </div>
           ))

@@ -4,7 +4,7 @@ exports = function(payload) {
     const habits = mongodb.db('TriggerTracker').collection('habits');
 
     const newHabit = JSON.parse(payload.body.text());
-    console.log(JSON.stingify(newHabit));
+    console.log(JSON.stringify(newHabit));
     
     return habits.insertOne({name: newHabit.name, email: newHabit.email, triggerCounts: []});
     

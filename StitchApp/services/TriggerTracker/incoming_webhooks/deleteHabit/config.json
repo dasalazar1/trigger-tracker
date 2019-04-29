@@ -1,0 +1,11 @@
+{
+    "id": "5cc659ebbf7027be5c305730",
+    "name": "deleteHabit",
+    "run_as_user_id": "",
+    "run_as_user_id_script_source": "",
+    "options": {
+        "httpMethod": "DELETE",
+        "validationMethod": "NO_VALIDATION"
+    },
+    "respond_result": true
+}

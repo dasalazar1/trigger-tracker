@@ -8,25 +8,28 @@ exports = function(payload) {
     console.log(JSON.stringify(keys));
     console.log(keys.trigger);
     
-    //return triggers.find({_id: BSON.ObjectId(keys.trigger)}).toArray()
-    
-    // .then(results => {
-    //   console.log(JSON.stringify(results));
-    // });
-    
-    triggers.findOne({"habitCounts.habit_id": keys.habit}).then(results => {
+    var triUpdate = triggers.findOne({"_id": BSON.ObjectId(keys.trigger), "habitCounts.habit_id": keys.habit}).then(results => {
       console.log(JSON.stringify(results));
       if(results === null){
         let habitCount = {"habit_id": keys.habit, "count": 1};
-        triggers.updateOne({"_id": BSON.ObjectId(keys.trigger)}, { $push: {"habitCounts": habitCount} });
-        console.log('null');
+        return triggers.updateOne({"_id": BSON.ObjectId(keys.trigger)}, { $push: {"habitCounts": habitCount} });
       }
       else{
-        triggers.updateOne({"habitCounts.habit_id": keys.habit}, {$inc: {"habitCounts.$.count": 1}});
-        console.log('inc');
+        return triggers.updateOne({"_id": BSON.ObjectId(keys.trigger), "habitCounts.habit_id": keys.habit}, {$inc: {"habitCounts.$.count": 1}});
       }
-      
     });
     
+    var habUpdate = habits.findOne({"_id": BSON.ObjectId(keys.habit), "habitCounts.habit_id": keys.trigger}).then(results => {
+      console.log(JSON.stringify(results));
+      if(results === null){
+        let triggerCount = {"trigger_id": keys.trigger, "count": 1};
+        return habits.updateOne({"_id": BSON.ObjectId(keys.habit)}, { $push: {"triggerCounts": triggerCount} });
+      }
+      else{
+        return habits.updateOne({"_id": BSON.ObjectId(keys.habit), "triggerCounts.habit_id": keys.trigger}, {$inc: {"triggerCounts.$.count": 1}});
+      }
+    });
+    
+    return Promise.all([triUpdate, habUpdate]);
 };
 
