@@ -1,29 +1,14 @@
-db.habits.find()
-
-// db.habits.deleteMany({})
-
-db.triggers.find()
-
-// db.triggers.deleteMany({})
-
-db.triggers.findOne({"habitCounts.habit_id": "5cc535dcc912013f13457848"})
-
-db.triggers.find({"_id": ObjectId("5cc5412ab2505988eb663846")});
-
-db.triggers.updateOne({_id: ObjectId("5cc5412ab2505988eb663846")}, 
-{$push: {"habitCounts": {"habit_id":"5cc535dcc912013f13457948", "count": 0}} });
-
-db.triggers.aggregate([{$unwind: "$habitCounts"},
-                        {$lookup: 
-                            {from: "habits", 
-                            localField: "habitCounts.habit_id", 
-                            foreignField: "_id", 
-                            as: "test"}}])
-
-db.triggers.aggregate([{$unwind: "$habitCounts"}])
-
-                     
-db.triggers.aggregate([ {$unwind: "$habitCounts"}
+// This function is the webhook's request handler.
+exports = function(payload) {
+  const mongodb = context.services.get('mongodb-atlas');
+  const triggers = mongodb.db('TriggerTracker').collection('triggers');
+  const habits = mongodb.db('TriggerTracker').collection('habits');
+  
+  const email = payload.query.email;
+  console.log('payload: ' + email);
+  
+  let triggerGraphCursor = triggers.aggregate([ {$match: {email: email}}
+                        ,{$unwind: "$habitCounts"}
                         ,{$lookup: 
                             {from: "habits", 
                             localField: "habitCounts.habit_id", 
@@ -31,15 +16,14 @@ db.triggers.aggregate([ {$unwind: "$habitCounts"}
                             as: "habitCounts.habit_id"}}
                         ,{$unwind: "$habitCounts.habit_id"}
                         ,{$replaceRoot: { newRoot: {trigger: "$name", name: "$habitCounts.habit_id.name", count: "$habitCounts.count"  } } }
-                        //,{$unwind: "$habitCounts.name"}
-                        //,{$project: {_id: 0, name: 1, "habitCounts.count": 1, "habitCounts.name.name":1} }
                         ,{$group: { _id: "$trigger", data: {$push: {k: "$name", v: "$count"} } }}
                         ,{$project: {_id: 0, name: "$_id", c: {$arrayToObject: "$data"} } }
                         ,{$addFields: { "c.name": "$name" } }
                         ,{$replaceRoot: { "newRoot": "$c" }  }
-                     ])
-
-db.habits.aggregate([ {$unwind: "$triggerCounts"}
+                     ]);
+                     
+  let habitsGraphCursor = habits.aggregate([ {$match: {email: email}}
+                        ,{$unwind: "$triggerCounts"}
                         ,{$lookup: 
                             {from: "triggers", 
                             localField: "triggerCounts.trigger_id", 
@@ -51,4 +35,11 @@ db.habits.aggregate([ {$unwind: "$triggerCounts"}
                         ,{$project: {_id: 0, name: "$_id", c: {$arrayToObject: "$data"} } }
                         ,{$addFields: { "c.name": "$name" } }
                         ,{$replaceRoot: { "newRoot": "$c" }  }
-                     ]) 
+                     ]);
+                     
+  let triggerData = triggerGraphCursor.toArray();
+  let habitData   = habitsGraphCursor.toArray();
+  
+  return {triggerData: triggerData, habitData: habitData};
+
+};

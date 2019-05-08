@@ -21,14 +21,14 @@ exports = function(payload) {
     }
   });
 
-  var habUpdate = habits.findOne({ _id: BSON.ObjectId(keys.habit), 'habitCounts.habit_id': keys.trigger }).then(results => {
+  var habUpdate = habits.findOne({ _id: BSON.ObjectId(keys.habit), 'triggerCounts.trigger_id': keys.trigger }).then(results => {
     console.log(JSON.stringify(results));
     if (results === null) {
       let triggerCount = { trigger_id: keys.trigger, count: 1 };
       return habits.updateOne({ _id: BSON.ObjectId(keys.habit) }, { $push: { triggerCounts: triggerCount } });
     } else {
       return habits.updateOne(
-        { _id: BSON.ObjectId(keys.habit), 'triggerCounts.habit_id': keys.trigger },
+        { _id: BSON.ObjectId(keys.habit), 'triggerCounts.trigger_id': keys.trigger },
         { $inc: { 'triggerCounts.$.count': 1 } }
       );
     }
