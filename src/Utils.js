@@ -14,6 +14,13 @@ export function fetchHabits(email) {
   });
 }
 
+export function fetchGraphData() {
+  return fetch(url + '/getGraphData?email=' + 'dasalazar1@gmail.com').then(response => {
+    console.log('response from atlas graph: ' + response);
+    return response.json();
+  });
+}
+
 export function updateCounts(habitKey, triggerKey) {
   return fetch(url + '/updateCounts', {
     method: 'POST',

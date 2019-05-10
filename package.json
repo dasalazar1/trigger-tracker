@@ -5,6 +5,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ejson": "^2.2.0",
     "mongodb": "^3.2.3",
     "mongodb-stitch-browser-sdk": "^4.3.2",
     "npm": "^6.9.0",

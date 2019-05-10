@@ -107,25 +107,38 @@ class App extends Component {
               User must authenticate.<button onClick={this.handleLogin}>Sign In</button>
             </div>
           ) : (
-            <div>
-              {currentUser.profile.name}
-              <button onClick={this.handleLogout}>Sign Out</button>
-            </div>
-          )}
-          <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
-          <Route
-            path="/menu"
-            render={props => (
-              <TriggerMenu
-                triggers={this.state.triggers}
-                habits={this.state.habits}
-                addHabit={this.addHabit}
-                removeHabit={this.removeHabit}
-                updateHabit={this.updateHabit}
+            <React.Fragment>
+              <div>
+                {currentUser.profile.name}
+                <button onClick={this.handleLogout}>Sign Out</button>
+              </div>
+
+              <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
+              <Route
+                path="/menu"
+                render={props => (
+                  <TriggerMenu
+                    triggers={this.state.triggers}
+                    habits={this.state.habits}
+                    addHabit={this.addHabit}
+                    removeHabit={this.removeHabit}
+                    updateHabit={this.updateHabit}
+                  />
+                )}
               />
-            )}
-          />
-          <Route path="/stats" render={props => <TriggerStats triggers={this.state.triggers} habits={this.state.habits} />} />
+              <Route
+                path="/stats"
+                render={props => (
+                  <TriggerStats
+                    triggerData={this.state.triggerData}
+                    habitData={this.state.habitData}
+                    email={currentUser.profile.email}
+                    getGraphData={this.getGraphData}
+                  />
+                )}
+              />
+            </React.Fragment>
+          )}
         </div>
       </div>
     );
