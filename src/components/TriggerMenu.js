@@ -56,6 +56,7 @@ class TriggerMenu extends Component {
             <div key={trigger._id['$oid']} index={trigger._id['$oid']}>
               {trigger.name}
               <button onClick={() => this.onOpenModal(trigger._id['$oid'])}>+</button>
+              <button onClick={() => this.props.removeTrigger(trigger._id['$oid'])}>-</button>
             </div>
           ))
         )}
