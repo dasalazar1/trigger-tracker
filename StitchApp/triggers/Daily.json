@@ -1,0 +1,10 @@
+{
+    "id": "5ced84b4f1e3093fff311a22",
+    "name": "Daily",
+    "type": "SCHEDULED",
+    "config": {
+        "schedule": "*/3 * * * *"
+    },
+    "function_name": "doTheThing",
+    "disabled": true
+}

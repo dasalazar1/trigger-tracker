@@ -5,6 +5,6 @@ exports = function(payload) {
   
   const email = payload.query.email;
   console.log('payload: ' + JSON.stringify());
-  
+  //return email;
   return triggers.find({email: email}).toArray();
 };

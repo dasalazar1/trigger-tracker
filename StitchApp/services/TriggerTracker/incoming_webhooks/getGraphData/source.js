@@ -1,5 +1,5 @@
 // This function is the webhook's request handler.
-exports = function(payload) {
+exports = async function(payload) {
   const mongodb = context.services.get('mongodb-atlas');
   const triggers = mongodb.db('TriggerTracker').collection('triggers');
   const habits = mongodb.db('TriggerTracker').collection('habits');
@@ -37,9 +37,11 @@ exports = function(payload) {
                         ,{$replaceRoot: { "newRoot": "$c" }  }
                      ]);
                      
-  let triggerData = triggerGraphCursor.toArray();
-  let habitData   = habitsGraphCursor.toArray();
+  let triggerData = await triggerGraphCursor.toArray();
+  let habitData   = await habitsGraphCursor.toArray();
   
-  return {triggerData: triggerData, habitData: habitData};
+  console.log(JSON.stringify(triggerData));
+  
+  return {triggerData: JSON.stringify(triggerData), habitData: JSON.stringify(habitData)};
 
 };
