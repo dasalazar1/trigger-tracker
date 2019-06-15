@@ -72,6 +72,12 @@ export function deleteHabit(habitId) {
   });
 }
 
+export function deleteTrigger(triggerId) {
+  return fetch(url + '/deleteTrigger?triggerId=' + triggerId, { method: 'DELETE' }).then(response => {
+    return response.json();
+  });
+}
+
 export function postTriggers(triggers) {
   return fetch(url + '/setTriggers', {
     method: 'POST',

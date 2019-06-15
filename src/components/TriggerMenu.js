@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TriggerModal from './triggerModal';
+import { Link } from 'react-router-dom';
 
 class TriggerMenu extends Component {
   state = {
@@ -30,7 +31,6 @@ class TriggerMenu extends Component {
   };
 
   render() {
-    console.log('menu');
     let modal;
 
     if (this.state.open) {
@@ -79,6 +79,8 @@ class TriggerMenu extends Component {
           <br />
           <button type="submit">Add New Habit -></button>
         </form>
+
+        <Link to="/stats">Go To Stats</Link>
       </React.Fragment>
     );
   }

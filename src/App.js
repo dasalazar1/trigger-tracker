@@ -5,7 +5,7 @@ import { Route } from 'react-router-dom';
 import TriggerMenu from './components/TriggerMenu';
 import TriggerStats from './components/TriggerStats';
 import { Stitch, GoogleRedirectCredential } from 'mongodb-stitch-browser-sdk';
-import { fetchTriggers, fetchHabits, updateCounts, newHabit, newTrigger, deleteHabit } from './Utils';
+import { fetchTriggers, fetchHabits, updateCounts, newHabit, newTrigger, deleteHabit, deleteTrigger } from './Utils';
 
 class App extends Component {
   state = {
@@ -92,6 +92,15 @@ class App extends Component {
     });
   };
 
+  removeTrigger = key => {
+    let { profile } = this.state.currentUser;
+    deleteTrigger(key).then(() => {
+      Promise.all([fetchTriggers(profile.email), fetchHabits(profile.email)]).then(([tri, hab]) => {
+        this.setState({ triggers: tri, habits: hab });
+      });
+    });
+  };
+
   updateHabit = (habitKey, triggerKey) => {
     updateCounts(habitKey, triggerKey);
   };
@@ -123,6 +132,7 @@ class App extends Component {
                     addHabit={this.addHabit}
                     removeHabit={this.removeHabit}
                     updateHabit={this.updateHabit}
+                    removeTrigger={this.removeTrigger}
                   />
                 )}
               />

@@ -27,6 +27,8 @@ class TriggerAdd extends Component {
           <button type="submit">Add New Trigger -></button>
         </form>
         <Link to="/menu">Go To Triggers</Link>
+        <br />
+        <Link to="/stats">Go To Stats</Link>
       </div>
     );
   }
