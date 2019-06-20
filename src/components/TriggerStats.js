@@ -66,7 +66,7 @@ class TriggerStats extends Component {
               </BarChart>
             </div>
             <div>
-              <h2>Total number of times a trigger has been habit</h2>
+              <h2>Total number of times a trigger has caused a habit</h2>
               <BarChart data={this.state.habitData} width={600} height={300}>
                 <XAxis dataKey="name" />
                 <Tooltip />

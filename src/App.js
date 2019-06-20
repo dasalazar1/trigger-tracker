@@ -109,19 +109,30 @@ class App extends Component {
     const { currentUser } = this.state;
     return (
       <div className="App">
-        <header className="App-header" />
-        <div className="App-body">
+        <header className="App-header ">
           {!currentUser ? (
-            <div>
-              User must authenticate.<button onClick={this.handleLogin}>Sign In</button>
-            </div>
+            <nav class="navbar right col-md-4 offset-md-8">
+              User must authenticate.
+              <button onClick={this.handleLogin} class="btn btn-info">
+                Sign In
+              </button>
+            </nav>
           ) : (
             <React.Fragment>
-              <div>
+              <nav class="navbar right col-md-4 offset-md-8">
                 {currentUser.profile.name}
-                <button onClick={this.handleLogout}>Sign Out</button>
-              </div>
-
+                <button onClick={this.handleLogout} class="btn btn-info">
+                  Sign Out
+                </button>
+              </nav>
+            </React.Fragment>
+          )}
+        </header>
+        <div className="App-body">
+          {!currentUser ? (
+            <div />
+          ) : (
+            <React.Fragment>
               <Route exact path="/" render={props => <TriggerAdd {...props} addTrigger={this.addTrigger} />} />
               <Route
                 path="/menu"

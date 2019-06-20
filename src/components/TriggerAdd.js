@@ -24,11 +24,17 @@ class TriggerAdd extends Component {
           <p>What is your trigger?</p>
           <input type="text" required placeholder="Trigger" ref={this.myInput} />
           <br />
-          <button type="submit">Add New Trigger -></button>
+          <button type="submit" class="btn btn-primary">
+            Add New Trigger ->
+          </button>
         </form>
-        <Link to="/menu">Go To Triggers</Link>
         <br />
-        <Link to="/stats">Go To Stats</Link>
+        <Link to="/menu" class="nav-link">
+          Go To Triggers
+        </Link>
+        <Link to="/stats" class="nav-link">
+          Go To Stats
+        </Link>
       </div>
     );
   }

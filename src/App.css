@@ -19,8 +19,8 @@
   color: white;
 }
 
-.App-body { 
-  background-color: grey;
+.App-body {
+  background-color: white;
   min-height: 90vh;
   display: flex;
   flex-direction: column;

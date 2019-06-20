@@ -49,35 +49,47 @@ class TriggerMenu extends Component {
     return (
       <React.Fragment>
         <h2>Triggers</h2>
-        {this.props.triggers.length === 0 ? (
-          <div />
-        ) : (
-          this.props.triggers.map(trigger => (
-            <div key={trigger._id['$oid']} index={trigger._id['$oid']}>
-              {trigger.name}
-              <button onClick={() => this.onOpenModal(trigger._id['$oid'])}>+</button>
-              <button onClick={() => this.props.removeTrigger(trigger._id['$oid'])}>-</button>
-            </div>
-          ))
-        )}
-
+        <ul class="container">
+          {this.props.triggers.length === 0 ? (
+            <div />
+          ) : (
+            this.props.triggers.map(trigger => (
+              <li key={trigger._id['$oid']} index={trigger._id['$oid']} class="row pb-2 ">
+                <div class="text-left col-sm-9">{trigger.name}</div>
+                <button onClick={() => this.onOpenModal(trigger._id['$oid'])} class="btn btn-primary  col-sm-1">
+                  +
+                </button>
+                <div class="col-sm-1" />
+                <button onClick={() => this.props.removeTrigger(trigger._id['$oid'])} class="btn btn-danger  col-sm-1">
+                  -
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
         {modal}
 
         <h2>Habits</h2>
-        {this.props.habits.length === 0 ? (
-          <div />
-        ) : (
-          this.props.habits.map(habit => (
-            <div key={habit._id['$oid']}>
-              {this.props.habits.find(hab => hab._id['$oid'] === habit._id['$oid']).name}
-              <button onClick={() => this.props.removeHabit(habit._id['$oid'])}>-</button>
-            </div>
-          ))
-        )}
+        <ul class="container">
+          {this.props.habits.length === 0 ? (
+            <div />
+          ) : (
+            this.props.habits.map(habit => (
+              <li key={habit._id['$oid']} class="row pb-2 ">
+                <div class="text-left col-sm-11">{this.props.habits.find(hab => hab._id['$oid'] === habit._id['$oid']).name} </div>
+                <button onClick={() => this.props.removeHabit(habit._id['$oid'])} class="btn btn-danger col-sm-1">
+                  -
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
         <form onSubmit={this.handleSubmit}>
           <input type="text" required placeholder="Add a new Habit" ref={this.myInput} />
           <br />
-          <button type="submit">Add New Habit -></button>
+          <button type="submit" class="btn btn-primary">
+            Add New Habit ->
+          </button>
         </form>
 
         <Link to="/stats">Go To Stats</Link>
